@@ -39,7 +39,6 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
 }
 
 void check_for_updates() {
-    bool foundUpdate = false;
 
     CURL *curl;
     CURLcode res;
@@ -71,8 +70,7 @@ void check_for_updates() {
                     cJSON *date = cJSON_GetObjectItemCaseSensitive(author, "date");
 
                     if (cJSON_IsString(sha) && sha->valuestring && cJSON_IsString(date) && date->valuestring) {
-                        printf("Latest commit SHA: %s\n", sha->valuestring);
-                        printf("Commit date: %s\n", date->valuestring);
+                        printf("Newest update date: %s\n", date->valuestring);
 
                         // Read last saved SHA
                         char last_sha[100] = {0};
@@ -86,7 +84,6 @@ void check_for_updates() {
                         if (strcmp(last_sha, sha->valuestring) != 0) {
                             printf("New update found!\n");
                             system("git pull");
-                            foundUpdate = true;
                             printf("Successfully updated!");
 
                             // Save new SHA

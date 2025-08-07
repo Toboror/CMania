@@ -16,11 +16,21 @@ int main(void) {
                "2. No\n");
         int answer;
         scanf("%d", &answer);
-        if (answer == 1) {
-            check_for_updates();
+        while (true) {
+            switch (answer) {
+                case 1:
+                    check_for_updates();
+                    break;
+                case 2:
+                    printf("Did not check for updates.\n");
+                    break;
+                default:
+                    printf("Invalid input.");
+            }
+            break;
         }
 
-        printf("Did not check for updates.\n");
+        system("read -p 'Press enter to continue...' var");
 
         running = false;
 

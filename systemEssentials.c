@@ -9,6 +9,12 @@
 #include "systemEssentials.h"
 #include "cJSON/cJSON.h"
 #include <stdbool.h>
+#ifdef _WIN32
+#include <windows.h>
+#define SLEEP(x) Sleep((x)*1000)
+#else
+#endif
+
 
 struct MemoryStruct {
     char *memory;
@@ -33,7 +39,6 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
 }
 
 void check_for_updates() {
-
     bool foundUpdate = false;
 
     CURL *curl;
@@ -48,11 +53,7 @@ void check_for_updates() {
 
     if(curl) {
         curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/Toboror/CMania/commits");
-
-        // GitHub requires a user-agent
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "my-c-client");
-
-        // Write callback
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 
@@ -61,15 +62,47 @@ void check_for_updates() {
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         } else {
             cJSON *json = cJSON_Parse(chunk.memory);
-            if (json) {
-                const cJSON *updated_at = cJSON_GetObjectItemCaseSensitive(json, "updated_at");
-                if (cJSON_IsString(updated_at) && updated_at->valuestring != NULL) {
-                    foundUpdate = true;
-                    printf("Repo last updated at: %s\n", updated_at->valuestring);
+            if (json && cJSON_IsArray(json)) {
+                cJSON *latest_commit = cJSON_GetArrayItem(json, 0);
+                if (latest_commit) {
+                    cJSON *sha = cJSON_GetObjectItemCaseSensitive(latest_commit, "sha");
+                    cJSON *commit_obj = cJSON_GetObjectItemCaseSensitive(latest_commit, "commit");
+                    cJSON *author = cJSON_GetObjectItemCaseSensitive(commit_obj, "author");
+                    cJSON *date = cJSON_GetObjectItemCaseSensitive(author, "date");
+
+                    if (cJSON_IsString(sha) && sha->valuestring && cJSON_IsString(date) && date->valuestring) {
+                        printf("Latest commit SHA: %s\n", sha->valuestring);
+                        printf("Commit date: %s\n", date->valuestring);
+
+                        // Read last saved SHA
+                        char last_sha[100] = {0};
+                        FILE *fp = fopen("last_sha.txt", "r");
+                        if (fp) {
+                            fgets(last_sha, sizeof(last_sha), fp);
+                            fclose(fp);
+                        }
+
+                        // Compare SHA
+                        if (strcmp(last_sha, sha->valuestring) != 0) {
+                            printf("New update found!\n");
+                            system("git pull");
+                            foundUpdate = true;
+                            printf("Successfully updated!");
+
+                            // Save new SHA
+                            FILE *fp2 = fopen("last_sha.txt", "w");
+                            if (fp2) {
+                                fprintf(fp2, "%s", sha->valuestring);
+                                fclose(fp2);
+                            }
+                        } else {
+                            printf("No new updates found.\n");
+                        }
+                    }
                 }
                 cJSON_Delete(json);
             } else {
-                printf("Failed to parse JSON.\n");
+                printf("Failed to parse JSON or unexpected format.\n");
             }
         }
 
@@ -79,10 +112,4 @@ void check_for_updates() {
     free(chunk.memory);
     curl_global_cleanup();
 
-    printf("Checking for updates...\n");
-    if (foundUpdate) {
-        printf("Found update! Updating now.");
-    } else {
-        printf("Did not find update. Continuing.");
-    }
 }

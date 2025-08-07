@@ -1,5 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "systemEssentials.h"
 
 int main(void) {
@@ -9,11 +11,16 @@ int main(void) {
     while (running) {
 
         printf("\nWelcome to my game!\n"
-               "Do you want to check for updates?\n");
+               "Do you want to check for updates?\n"
+               "1. Yes\n"
+               "2. No\n");
+        int answer;
+        scanf("%d", &answer);
+        if (answer == 1) {
+            check_for_updates();
+        }
 
-        check_for_updates();
-
-        printf("\n");
+        printf("Did not check for updates.\n");
 
         running = false;
 

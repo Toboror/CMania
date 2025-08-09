@@ -1,0 +1,3 @@
+/Users/tobiasronningen/CLionProjects/CMania/cmake-build-debug/CMakeFiles/Cmania.dir
+/Users/tobiasronningen/CLionProjects/CMania/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/tobiasronningen/CLionProjects/CMania/cmake-build-debug/CMakeFiles/rebuild_cache.dir

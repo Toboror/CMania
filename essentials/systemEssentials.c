@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <curl/curl.h>
-#include "../systemEssentials.h"
+#include "../essentials/systemEssentials.h"
 #include "../cJSON/cJSON.h"
 #include <stdbool.h>
 #ifdef _WIN32

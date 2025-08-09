@@ -5,6 +5,11 @@
 #ifndef SYSTEM_NETWORK_H
 #define SYSTEM_NETWORK_H
 #include <stddef.h>
+#include <stdbool.h>
+
+#include <stdbool.h>
+
+extern bool online_or_offline_flag; // True is online and false is offline.
 
 // Will look for other users on the network.
 void look_for_users();

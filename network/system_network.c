@@ -6,10 +6,11 @@
 
 #include <stdio.h>
 
+bool online_or_offline_flag = false;
+
 void look_for_users() {
 
     Socket s;
-    s.ai_addr = 
 
     printf("Looking for other users...");
 

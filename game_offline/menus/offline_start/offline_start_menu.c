@@ -2,11 +2,11 @@
 // Created by Tobias Rønningen on 09/08/2025.
 //
 
-#include "offline_start_menu.h"
+#include "../offline_start_menu.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../../terminal_runner/terminal_utils.h"
+#include "../../../terminal_runner/terminal_utils.h"
 
 #define RED_TEXT "\033[31m"
 #define GREEN_TEXT "\033[32m"
@@ -14,7 +14,10 @@
 
 void offline_display_start_menu(){
 
-    printf(GREEN_TEXT "Welcome to CMania Offline!""\n");
+    printf(GREEN_TEXT ""
+                      "\n\n--------------------------"
+                      "\nWelcome to CMania Offline!"""
+                      "\n--------------------------""\n\n");
 
     printf("What do you want to do?\n"
            "1. New game\n"

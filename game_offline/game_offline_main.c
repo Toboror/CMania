@@ -6,7 +6,7 @@
 #include "../terminal_runner/terminal_utils.h"
 #include <stdbool.h>
 
-#include "menus/offline_start_menu.h"
+#include "menus/offline_start/offline_start_menu.h"
 
 void offline_main(){
 
